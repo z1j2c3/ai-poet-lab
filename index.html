@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI 诗人 · 看图作诗实验室：从图片到七言绝句，形式与表达双轨评估。" />
+  <title>AI 诗人 · 看图作诗实验室</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#top">
+        <span class="brand-seal">诗</span>
+        <span class="brand-text">AI 诗人 <em>· 看图作诗实验室</em></span>
+      </a>
+      <nav class="nav">
+        <a href="#studio">看图作诗</a>
+        <a href="#evaluate">双轨评估</a>
+        <a href="#blind">盲评</a>
+        <a href="#knowledge">知识卡片</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="wrap hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">Lecture V9 · 第 30 讲 · 人工智能诗人</p>
+          <h1>押韵容易，<br /><span>写出意味难。</span></h1>
+          <p class="hero-lead">
+            诗歌既有字数、韵脚和平仄等可检验的形式，也有连贯意象与情感；满足前者并不自动得到好诗。
+            本项目把「看图作诗」拆成可观察的几步：提取意象 → 生成初稿 → 形式修订 → 表达修订 → 分开评估。
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#studio">开始作诗</a>
+            <a class="btn btn-ghost" href="#knowledge">看课件要点</a>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="ink-circle"></div>
+          <div class="hero-verse">燕子不归春事晚<br />一汀烟雨杏花寒</div>
+          <div class="hero-stamp">AI</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 看图作诗 -->
+    <section id="studio" class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-no">01</span>
+          <div>
+            <h2>看图作诗</h2>
+            <p>从画面提取对象、场景和氛围，再用符合诗体的语言表达。以七言绝句为例：四句共 28 字，还要顾及押韵与节奏。</p>
+          </div>
+        </div>
+
+        <div class="studio-grid">
+          <div class="panel">
+            <h3 class="panel-title">① 选择画面</h3>
+            <div class="upload-box" id="uploadBox">
+              <input type="file" id="imageInput" accept="image/*" hidden />
+              <div class="upload-placeholder" id="uploadPlaceholder">
+                <span class="upload-icon"> ＋ </span>
+                <strong>点击上传一张图片</strong>
+                <small>或选一幅下面的示例图</small>
+              </div>
+              <img id="imagePreview" alt="已选择的图片" hidden />
+            </div>
+            <p class="hint">示例图</p>
+            <div class="scene-thumbs" id="sceneThumbs"></div>
+            <p class="hint">场景标签（可修正自动识别结果）</p>
+            <div class="chips" id="sceneChips"></div>
+            <button class="btn btn-outline btn-block" id="analyzeBtn">提取画面意象</button>
+            <div class="result-block" id="imageInsight" hidden>
+              <div class="insight-row"><span>主色调</span><b id="toneText">—</b></div>
+              <div class="insight-row"><span>推断场景</span><b id="sceneText">—</b></div>
+              <div class="insight-row"><span>氛围关键词</span><b id="keywordText">—</b></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3 class="panel-title">② 生成与修订</h3>
+            <p class="panel-desc">模仿 BIPro（ACL 2025）的思路：不是一次写完就交卷，而是按形式与表达问题多轮修订。</p>
+            <button class="btn btn-primary btn-block" id="generateBtn" disabled>生成七言绝句</button>
+            <div id="generationResult" hidden>
+              <div class="rounds" id="rounds"></div>
+              <div class="final-poem">
+                <div class="final-head">
+                  <span>最终稿</span>
+                  <small id="finalMeta"></small>
+                </div>
+                <pre id="finalPoem"></pre>
+                <div class="final-actions">
+                  <button class="btn btn-small btn-ghost" id="copyBtn">复制诗句</button>
+                  <button class="btn btn-small btn-ghost" id="againBtn">换一首</button>
+                  <a class="btn btn-small btn-ghost" href="#evaluate">去评估</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 双轨评估 -->
+    <section id="evaluate" class="section section-tint">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-no">02</span>
+          <div>
+            <h2>形式与表达，分开检查</h2>
+            <p>格律可以逐项核对；意象是否贴合主题、表达是否有新意，还要结合读者判断。目前没有能替代文学判断的统一分数。</p>
+          </div>
+        </div>
+        <div id="evaluationEmpty" class="empty-note">先在上面生成一首诗，再回来做双轨评估。</div>
+        <div id="evaluationPanel" class="evaluation-grid" hidden>
+          <div class="panel">
+            <h3 class="panel-title tag-form">形式检查 <small>自动逐项核对</small></h3>
+            <div id="formChecks" class="check-list"></div>
+            <p class="verdict" id="formVerdict"></p>
+          </div>
+          <div class="panel">
+            <h3 class="panel-title tag-content">内容检查 <small>提示，而非打分</small></h3>
+            <div id="contentChecks" class="check-list"></div>
+            <p class="verdict">自动评测更适合检查形式；意境与文化典故仍需人工评价。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 盲评 -->
+    <section id="blind" class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-no">03</span>
+          <div>
+            <h2>盲评：隐去作者再比较</h2>
+            <p>让读者不知道作者是谁，再比较多首诗；记录评价问题，避免只报「喜欢率」。同一幅画可以写出多首合理诗，难以用单一标准答案打分。</p>
+          </div>
+        </div>
+        <div class="blind-grid">
+          <div class="blind-card" id="blindA">
+            <span class="blind-label">作品 A</span>
+            <pre>尚未生成</pre>
+          </div>
+          <div class="blind-card" id="blindB">
+            <span class="blind-label">作品 B</span>
+            <pre>等待抽取经典诗作</pre>
+          </div>
+        </div>
+        <div class="vote-box">
+          <p>你更喜欢哪一首？（可写下理由）</p>
+          <div class="vote-actions">
+            <button class="btn btn-outline" data-vote="A">更喜欢 A</button>
+            <button class="btn btn-outline" data-vote="B">更喜欢 B</button>
+            <input type="text" id="voteReason" maxlength="80" placeholder="理由，例如：意象更连贯 / 语言更新鲜" />
+            <button class="btn btn-primary" id="voteSubmit">提交盲评</button>
+          </div>
+          <div class="vote-result" id="voteResult" hidden></div>
+          <div class="vote-log" id="voteLog"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 知识卡片 -->
+    <section id="knowledge" class="section section-tint">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-no">04</span>
+          <div>
+            <h2>课件知识卡片</h2>
+            <p>把这一讲的框架整理成可查阅的卡片：诗体分类、方法演进、关键思路与待解决问题。</p>
+          </div>
+        </div>
+
+        <h3 class="subhead">古代诗词分类</h3>
+        <div class="category-grid" id="categoryGrid"></div>
+
+        <h3 class="subhead">从拼贴诗句到条件生成</h3>
+        <div class="timeline" id="timeline"></div>
+
+        <h3 class="subhead">关键思路 · 难点 · 待解决</h3>
+        <div class="point-grid" id="pointGrid"></div>
+
+        <h3 class="subhead">课件中的诗句示例</h3>
+        <div class="classic-grid" id="classicGrid"></div>
+
+        <div class="source-note">
+          研究参考：BIPro · ACL 2025；Honglou-Poem · EMNLP 2026。本项目为课程作业演示，生成结果为规则与模板驱动，不代表真实模型能力。
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>AI 诗人 · 看图作诗实验室</span>
+      <span>Lecture V9 · 30 / 人工智能诗人 · 语言生成</span>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/poem.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
